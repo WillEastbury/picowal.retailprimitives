@@ -173,6 +173,18 @@ static const picowal_retail_product_t demo_products[] = {
     { "summit-pack", "Summit 32L Day Pack", "Ventilated pack with hydration sleeve", "packs", "Contoso Trail", "backpack hydration hiking", 94.99f, 64 },
     { "camp-lantern", "LumaCamp Rechargeable Lantern", "USB-C lantern with warm dimming modes", "camping", "Litware Camp", "lantern camping rechargeable", 39.99f, 300 },
     { "down-jacket", "Nimbus Packable Down Jacket", "Warm packable down jacket for alpine starts", "outerwear", "Fabrikam Alpine", "down winter jacket", 199.99f, 57 },
+    { "granola-clusters", "Honey Oat Granola Clusters", "Crunchy wholegrain breakfast clusters with honey and seeds", "food", "Northwind Pantry", "breakfast oats honey food", 4.25f, 520 },
+    { "artisan-pasta", "Bronze Cut Fusilli Pasta", "Slow dried Italian-style pasta with rough sauce-catching texture", "food", "Contoso Kitchen", "pasta dinner pantry food", 2.75f, 680 },
+    { "trail-mix", "Summit Trail Mix", "Roasted nuts fruit and dark chocolate for long walks", "food", "Adventure Works", "snack nuts hiking food", 3.95f, 430 },
+    { "running-tights", "AeroFlex Running Tights", "Breathable compression tights with phone pocket and reflective trim", "sportswear", "Fabrikam Active", "running sportswear training", 54.99f, 160 },
+    { "training-tee", "Tempo Training Tee", "Lightweight sweat-wicking tee for gym sessions and warm runs", "sportswear", "Contoso Active", "shirt gym sportswear running", 24.99f, 340 },
+    { "court-trainers", "CourtLite Indoor Trainers", "Non-marking indoor court trainers with cushioned sole", "sportswear", "Northwind Sport", "trainers sportswear court shoes", 69.99f, 95 },
+    { "cold-brew", "Cold Brew Coffee Cans", "Four pack of smooth unsweetened cold brew coffee", "drinks", "Litware Roasters", "coffee cold brew drinks", 6.50f, 260 },
+    { "sparkling-water", "Citrus Sparkling Water", "Twelve cans of zero sugar sparkling water with citrus flavour", "drinks", "Northwind Refresh", "water citrus drinks zero sugar", 5.75f, 720 },
+    { "protein-shake", "Vanilla Protein Shake", "Ready-to-drink high protein shake for post-workout recovery", "drinks", "Fabrikam Active", "protein shake drinks sports", 2.95f, 390 },
+    { "cordless-drill", "18V Cordless Drill Driver", "Compact drill driver with two batteries and fast charger", "hardware", "Contoso Tools", "drill hardware diy tools", 89.99f, 72 },
+    { "paint-roller-kit", "SmoothWall Paint Roller Kit", "Roller tray sleeves and edging brush for interior painting", "hardware", "Northwind DIY", "paint roller hardware decorating", 18.99f, 210 },
+    { "smart-thermostat", "Smart Home Thermostat", "Programmable thermostat with app control and energy reports", "hardware", "Litware Home", "thermostat smart home hardware", 119.0f, 48 },
 };
 
 picowal_search_status_t picowal_retail_ingest_demo(picowal_retail_t *retail) {

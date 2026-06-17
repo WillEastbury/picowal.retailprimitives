@@ -44,9 +44,17 @@ int main(void) {
     char json[PICOWAL_RETAIL_JSON_MAX];
     if (picowal_retail_products_json(&retail, json, sizeof(json)) != PICOWAL_SEARCH_OK) return 1;
     if (!contains(json, "Aurora Storm Shell Jacket")) return 1;
+    if (!contains(json, "Honey Oat Granola Clusters")) return 1;
+    if (!contains(json, "AeroFlex Running Tights")) return 1;
+    if (!contains(json, "Cold Brew Coffee Cans")) return 1;
+    if (!contains(json, "18V Cordless Drill Driver")) return 1;
 
     if (picowal_retail_search_json(&retail, "waterproof jacket", json, sizeof(json)) != PICOWAL_SEARCH_OK) return 1;
     if (!contains(json, "results") || !contains(json, "outerwear")) return 1;
+    if (picowal_retail_search_json(&retail, "coffee drinks", json, sizeof(json)) != PICOWAL_SEARCH_OK) return 1;
+    if (!contains(json, "Cold Brew Coffee Cans") || !contains(json, "drinks")) return 1;
+    if (picowal_retail_search_json(&retail, "drill hardware", json, sizeof(json)) != PICOWAL_SEARCH_OK) return 1;
+    if (!contains(json, "18V Cordless Drill Driver") || !contains(json, "hardware")) return 1;
 
     if (picowal_retail_product_json(&retail, "aurora-shell", json, sizeof(json)) != PICOWAL_SEARCH_OK) return 1;
     if (!contains(json, "Contoso Trail")) return 1;
