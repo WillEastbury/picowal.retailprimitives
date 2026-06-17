@@ -254,6 +254,8 @@ picowal_search_status_t picowal_retail_search_json(picowal_retail_t *retail,
         .query_vector_dims = PICOWAL_RETAIL_VECTOR_DIMS,
         .limit = 16,
         .candidate_limit = 32,
+        .lexical_weight = 5.0f,
+        .vector_weight = 0.2f,
     };
     picowal_search_status_t st = picowal_search_query(&retail->search, &req, &res);
     if (st != PICOWAL_SEARCH_OK) return st;
