@@ -99,8 +99,9 @@ void picowal_retail_init(picowal_retail_t *retail,
     picowal_search_journal_replay_from_pack(&retail->search, journal_pack, journal_base_card);
 }
 
-picowal_search_status_t picowal_retail_upsert(picowal_retail_t *retail,
-                                              const picowal_retail_product_t *product) {
+static picowal_search_status_t retail_upsert_internal(picowal_retail_t *retail,
+                                                      const picowal_retail_product_t *product,
+                                                      bool persist_index) {
     if (!retail || !product || !product->id[0] || !product->title[0]) return PICOWAL_SEARCH_INVALID;
     uint32_t card = picowal_retail_card_for_id(product->id);
     retail_card_t row = {
@@ -129,6 +130,23 @@ picowal_search_status_t picowal_retail_upsert(picowal_retail_t *retail,
     if ((st = picowal_search_journal_number_to_pack(&retail->search, retail->journal_pack,
                                                     retail->journal_base_card, retail->product_pack,
                                                     card, "price", product->price)) != PICOWAL_SEARCH_OK) return st;
+    return persist_index
+        ? picowal_search_save_to_pack(&retail->search, retail->index_pack, retail->index_base_card)
+        : PICOWAL_SEARCH_OK;
+}
+
+picowal_search_status_t picowal_retail_upsert(picowal_retail_t *retail,
+                                              const picowal_retail_product_t *product) {
+    return retail_upsert_internal(retail, product, true);
+}
+
+picowal_search_status_t picowal_retail_upsert_deferred(picowal_retail_t *retail,
+                                                       const picowal_retail_product_t *product) {
+    return retail_upsert_internal(retail, product, false);
+}
+
+picowal_search_status_t picowal_retail_persist_index(picowal_retail_t *retail) {
+    if (!retail) return PICOWAL_SEARCH_INVALID;
     return picowal_search_save_to_pack(&retail->search, retail->index_pack, retail->index_base_card);
 }
 
@@ -152,8 +170,8 @@ uint32_t picowal_retail_list(picowal_retail_t *retail,
                              picowal_retail_product_t *out_products,
                              uint32_t max_products) {
     if (!retail || !out_products || max_products == 0) return 0;
-    uint32_t cards[128];
-    uint32_t count = picowal_api_list(retail->product_pack, cards, 128);
+    uint32_t cards[8192];
+    uint32_t count = picowal_api_list(retail->product_pack, cards, 8192);
     uint32_t out = 0;
     for (uint32_t i = 0; i < count && out < max_products; i++) {
         retail_card_t row;
@@ -226,6 +244,32 @@ picowal_search_status_t picowal_retail_products_json(picowal_retail_t *retail,
         pos = product_json(out_json, out_cap, pos, &products[i]);
     }
     append_json(out_json, out_cap, pos, "],\"totalSize\":%lu}", (unsigned long)count);
+    return PICOWAL_SEARCH_OK;
+}
+
+picowal_search_status_t picowal_retail_products_page_json(picowal_retail_t *retail,
+                                                          uint32_t offset,
+                                                          uint32_t limit,
+                                                          char *out_json,
+                                                          size_t out_cap) {
+    if (!retail || !out_json || out_cap == 0 || limit == 0) return PICOWAL_SEARCH_INVALID;
+    uint32_t cards[8192];
+    uint32_t count = picowal_api_list(retail->product_pack, cards, 8192);
+    size_t pos = append_json(out_json, out_cap, 0, "{\"products\":[");
+    uint32_t emitted = 0;
+    for (uint32_t i = offset; i < count && emitted < limit; i++) {
+        retail_card_t row;
+        uint16_t len = sizeof(row);
+        if (picowal_api_get(retail->product_pack, cards[i], &row, sizeof(row), &len) == PICOWAL_API_OK &&
+            len == sizeof(row) && row.magic == RETAIL_PRODUCT_MAGIC) {
+            if (emitted) pos = append_json(out_json, out_cap, pos, ",");
+            pos = product_json(out_json, out_cap, pos, &row.product);
+            emitted++;
+        }
+    }
+    append_json(out_json, out_cap, pos,
+                "],\"totalSize\":%lu,\"offset\":%lu,\"limit\":%lu,\"returned\":%lu}",
+                (unsigned long)count, (unsigned long)offset, (unsigned long)limit, (unsigned long)emitted);
     return PICOWAL_SEARCH_OK;
 }
 

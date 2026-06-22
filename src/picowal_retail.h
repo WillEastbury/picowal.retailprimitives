@@ -44,6 +44,9 @@ void picowal_retail_init(picowal_retail_t *retail,
 uint32_t picowal_retail_card_for_id(const char *id);
 picowal_search_status_t picowal_retail_upsert(picowal_retail_t *retail,
                                               const picowal_retail_product_t *product);
+picowal_search_status_t picowal_retail_upsert_deferred(picowal_retail_t *retail,
+                                                       const picowal_retail_product_t *product);
+picowal_search_status_t picowal_retail_persist_index(picowal_retail_t *retail);
 picowal_search_status_t picowal_retail_get(picowal_retail_t *retail,
                                            const char *id,
                                            picowal_retail_product_t *out_product);
@@ -58,6 +61,11 @@ picowal_search_status_t picowal_retail_search_json(picowal_retail_t *retail,
 picowal_search_status_t picowal_retail_products_json(picowal_retail_t *retail,
                                                      char *out_json,
                                                      size_t out_cap);
+picowal_search_status_t picowal_retail_products_page_json(picowal_retail_t *retail,
+                                                          uint32_t offset,
+                                                          uint32_t limit,
+                                                          char *out_json,
+                                                          size_t out_cap);
 picowal_search_status_t picowal_retail_product_json(picowal_retail_t *retail,
                                                     const char *id,
                                                     char *out_json,
